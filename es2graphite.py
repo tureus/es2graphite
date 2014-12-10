@@ -124,7 +124,7 @@ def send_to_graphite(metrics):
  
 def get_metrics():
     dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    node_stats_url = 'http://%s/_cluster/nodes/stats?all=true' % get_es_host()
+    node_stats_url = 'http://%s/_nodes/stats?all=true' % get_es_host()
     log('%s: GET %s' % (dt, node_stats_url))
     node_stats_data = urllib2.urlopen(node_stats_url).read()
     node_stats = json.loads(node_stats_data)
