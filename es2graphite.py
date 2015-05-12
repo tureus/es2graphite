@@ -110,7 +110,23 @@ def process_section(timestamp, metrics, prefix, section):
         else:
             add_metric(metrics, prefix, stat, stat_val, timestamp)
 
+def chunkList(initialList, chunkSize):
+    finalList = []
+    for i in range(0, len(initialList), chunkSize):
+        finalList.append(initialList[i:i+chunkSize])
+    return finalList
+
+def is_not_logstash(metric):
+    m, mval = metric
+    return m.find("logstash") == -1
+
 def send_to_graphite(metrics):
+    metrics = filter(is_not_logstash, metrics)
+    metric_chunks = chunkList(metrics, 2000)
+    for chunk in metric_chunks:
+        send_chunk_to_graphite(chunk)
+
+def send_chunk_to_graphite(metrics):
     if args.debug:
         for m, mval  in metrics:
             log('%s %s = %s' % (mval[0], m, mval[1]), True)
