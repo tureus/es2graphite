@@ -120,8 +120,13 @@ def is_not_logstash(metric):
     m, mval = metric
     return m.find("logstash") == -1
 
+def is_not_indices(metric):
+    m, mval = metric
+    return m.find("indices") == -1
+
 def send_to_graphite(metrics):
     metrics = filter(is_not_logstash, metrics)
+    metrics = filter(is_not_indices, metrics)
     metric_chunks = chunkList(metrics, 2000)
     for chunk in metric_chunks:
         send_chunk_to_graphite(chunk)
